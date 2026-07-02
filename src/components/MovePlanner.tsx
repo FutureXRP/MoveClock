@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { STATES, getStateMove } from "@/lib/moveData";
 import { buildICS, buildTimeline } from "@/lib/timeline";
+import { clearPlan, loadPlan, savePlan } from "@/lib/plan";
 import { TimelineView } from "./TimelineView";
 
 export function MovePlanner({
@@ -18,6 +19,47 @@ export function MovePlanner({
   const [from, setFrom] = useState(initialFrom);
   const [to, setTo] = useState(initialTo);
   const [arrival, setArrival] = useState("");
+  const [hydrated, setHydrated] = useState(false);
+  const dirty = useRef(false);
+
+  // Restore the saved plan on mount. Page-provided route (initialFrom/To)
+  // wins for its own fields; the saved arrival date fills in everywhere so a
+  // dated countdown greets the visitor on any page they land on.
+  useEffect(() => {
+    const saved = loadPlan();
+    if (saved) {
+      if (!initialFrom && saved.from) setFrom(saved.from);
+      if (!initialTo && saved.to) setTo(saved.to);
+      if (saved.arrival) setArrival(saved.arrival);
+    }
+    setHydrated(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist only after real user interaction — merely viewing a route page
+  // shouldn't overwrite a plan built elsewhere.
+  useEffect(() => {
+    if (!hydrated || !dirty.current) return;
+    savePlan({ from, to, arrival });
+  }, [from, to, arrival, hydrated]);
+
+  function touch<T>(setter: (v: T) => void) {
+    return (v: T) => {
+      dirty.current = true;
+      setter(v);
+    };
+  }
+  const updateFrom = touch(setFrom);
+  const updateTo = touch(setTo);
+  const updateArrival = touch(setArrival);
+
+  function startOver() {
+    dirty.current = false;
+    clearPlan();
+    setFrom(initialFrom);
+    setTo(initialTo);
+    setArrival("");
+  }
 
   const toState = getStateMove(to);
   const fromState = getStateMove(from);
@@ -39,8 +81,18 @@ export function MovePlanner({
   return (
     <div id="plan">
       <div className="sign-panel p-6 sm:p-8">
-        <div className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-caution">
-          Route planner
+        <div className="flex items-baseline justify-between gap-3">
+          <div className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-caution">
+            Route planner
+          </div>
+          {hydrated && (from || to || arrival) && (
+            <button
+              onClick={startOver}
+              className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-white/60 underline underline-offset-2 hover:text-caution"
+            >
+              Start over
+            </button>
+          )}
         </div>
         <h2 className="mt-2 font-sign text-2xl font-black leading-tight text-white">
           {compact ? "Set your date — get your countdown" : "Where are you headed?"}
@@ -48,7 +100,7 @@ export function MovePlanner({
         <div className="mt-5 grid gap-4 sm:grid-cols-3">
           <div>
             <label className="field-label !text-white/75" htmlFor="mp-from">Moving from</label>
-            <select id="mp-from" className="field" value={from} onChange={(e) => setFrom(e.target.value)}>
+            <select id="mp-from" className="field" value={from} onChange={(e) => updateFrom(e.target.value)}>
               <option value="">State…</option>
               {STATES.map((s) => (
                 <option key={s.slug} value={s.slug}>{s.name}</option>
@@ -57,7 +109,7 @@ export function MovePlanner({
           </div>
           <div>
             <label className="field-label !text-white/75" htmlFor="mp-to">Moving to</label>
-            <select id="mp-to" className="field" value={to} onChange={(e) => setTo(e.target.value)}>
+            <select id="mp-to" className="field" value={to} onChange={(e) => updateTo(e.target.value)}>
               <option value="">State…</option>
               {STATES.filter((s) => s.slug !== from).map((s) => (
                 <option key={s.slug} value={s.slug}>{s.name}</option>
@@ -71,7 +123,7 @@ export function MovePlanner({
               type="date"
               className="field"
               value={arrival}
-              onChange={(e) => setArrival(e.target.value)}
+              onChange={(e) => updateArrival(e.target.value)}
             />
           </div>
         </div>
@@ -121,7 +173,7 @@ export function MovePlanner({
           )}
           {fromState && !compact && (
             <p className="print-hide mt-6 text-center text-[14px] text-gravel">
-              Bookmark your route page:{" "}
+              Your plan follows you around the site — or bookmark your route page:{" "}
               <Link
                 href={`/moving/${fromState.slug}/${toState.slug}`}
                 className="font-bold text-sign underline underline-offset-4"

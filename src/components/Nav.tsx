@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PlanLink } from "./PlanLink";
 
 export function Nav() {
   return (
@@ -32,12 +33,7 @@ export function Nav() {
           <Link href="/deadlines" className="px-2 py-2 text-white/85 transition hover:text-caution">
             All 50 deadlines
           </Link>
-          <Link
-            href="/#plan"
-            className="rounded-lg bg-caution px-4 py-2 text-ink shadow-[inset_0_0_0_2px_rgba(22,33,27,0.8)] transition-transform hover:-translate-y-0.5"
-          >
-            Plan my move
-          </Link>
+          <PlanLink />
         </div>
       </nav>
     </header>
