@@ -152,7 +152,8 @@ export default function RoutePage({ params }: Props) {
       <section className="mt-12">
         <h2 className="font-sign text-2xl font-black">The countdown, day by day</h2>
         <p className="mb-6 mt-2 text-[15px] text-gravel">
-          Day 0 is the day you establish residency in {to.name}.
+          Day 0 is the day you establish residency in {to.name}. Yellow markers are prep
+          work before you arrive; check things off as you go — we&apos;ll remember.
         </p>
         <RouteCountdown toSlug={to.slug} fromSlug={from.slug} />
       </section>
