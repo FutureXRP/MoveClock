@@ -7,6 +7,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const core: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/deadlines`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${siteUrl}/about`, changeFrequency: "yearly", priority: 0.4 },
+    { url: `${siteUrl}/contact`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${siteUrl}/disclosure`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/privacy`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/terms`, changeFrequency: "yearly", priority: 0.2 },
   ];
   const stateHubs: MetadataRoute.Sitemap = STATES.map((s) => ({
     url: `${siteUrl}/state/${s.slug}`,

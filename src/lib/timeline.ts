@@ -55,6 +55,18 @@ export function buildTimeline(to: StateMove): TimelineItem[] {
   });
 
   items.push({
+    key: "utilities",
+    dueDays: -14,
+    title: "Set up internet & utilities at the new place",
+    detail:
+      "Internet installs commonly book 1–2 weeks out — schedule it now so you're not working from a parking lot on day three. Electric, gas, and water usually need a start-date call too; some utilities want a deposit from new-to-state customers.",
+    kind: "smart",
+    links: [
+      { label: "Check providers at your new address", url: AFFILIATES.internet.url, sponsored: true },
+    ],
+  });
+
+  items.push({
     key: "mail-forward",
     dueDays: -7,
     title: "Start USPS mail forwarding",

@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="print-hide mt-24 bg-sign text-white">
       <div className="center-line-h" />
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.2fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 sm:grid-cols-2 md:grid-cols-[1.3fr_1fr_0.9fr_0.9fr]">
         <div>
           <div className="font-sign text-xl font-black">
             Move<span className="text-caution">Clock</span>
@@ -51,6 +51,27 @@ export function Footer() {
                 License deadlines, all states
               </Link>
             </li>
+          </ul>
+        </div>
+        <div>
+          <div className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-caution">
+            Site
+          </div>
+          <ul className="mt-3 space-y-1.5 text-[15px]">
+            {[
+              ["/about", "About"],
+              ["/contact", "Contact"],
+              ["/partners", "Advertise"],
+              ["/disclosure", "Disclosure"],
+              ["/privacy", "Privacy"],
+              ["/terms", "Terms"],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <Link href={href} className="text-white/85 underline decoration-white/30 underline-offset-4 transition hover:text-caution">
+                  {label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

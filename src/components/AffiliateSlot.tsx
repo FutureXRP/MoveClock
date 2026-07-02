@@ -23,6 +23,11 @@ const SLOTS = [
     label: "Get car shipping quotes",
     sub: "Door-to-door interstate auto transport",
   },
+  {
+    ...AFFILIATES.internet,
+    label: "Set up internet at the new address",
+    sub: "See which providers serve your new place before you arrive",
+  },
 ];
 
 export function AffiliateSlot() {
