@@ -115,7 +115,15 @@ export default function RoutePage({ params }: Props) {
             License
           </div>
           <div className="mt-1 font-sign text-3xl font-black text-white">{licenseLabel(to)}</div>
-          <div className="mt-1 text-[12px] text-white/75">{to.agency}</div>
+          <div className="mt-1 text-[12px] text-white/75">
+            {to.licenseUrl ? (
+              <a href={to.licenseUrl} target="_blank" rel="noopener noreferrer" className="underline decoration-white/40 underline-offset-2 hover:text-caution">
+                {to.agency} ↗
+              </a>
+            ) : (
+              to.agency
+            )}
+          </div>
         </div>
         <div className="sign-panel p-5 text-center">
           <div className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-caution">

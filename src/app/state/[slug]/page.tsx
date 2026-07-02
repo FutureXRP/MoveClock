@@ -60,7 +60,15 @@ export default function StatePage({ params }: Props) {
         <div className="sign-panel p-5 text-center">
           <div className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-caution">License</div>
           <div className="mt-1 font-sign text-3xl font-black text-white">{licenseLabel(s)}</div>
-          <div className="mt-1 text-[12px] text-white/75">{s.agency}</div>
+          <div className="mt-1 text-[12px] text-white/75">
+            {s.licenseUrl ? (
+              <a href={s.licenseUrl} target="_blank" rel="noopener noreferrer" className="underline decoration-white/40 underline-offset-2 hover:text-caution">
+                {s.agency} ↗
+              </a>
+            ) : (
+              s.agency
+            )}
+          </div>
         </div>
         <div className="sign-panel p-5 text-center">
           <div className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-caution">Vehicle</div>

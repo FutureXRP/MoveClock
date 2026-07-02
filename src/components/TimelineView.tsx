@@ -47,6 +47,36 @@ export function TimelineView({
                 )}
               </div>
               <p className="mt-1.5 text-[14.5px] leading-relaxed text-gravel">{item.detail}</p>
+              {item.links.length > 0 && (
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {item.links.map((link) =>
+                    link.sponsored ? (
+                      <a
+                        key={link.url + link.label}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer sponsored"
+                        className="inline-flex items-center gap-1.5 rounded-md bg-caution px-3 py-1.5 font-sign text-[12.5px] font-extrabold text-ink shadow-[inset_0_0_0_1.5px_rgba(22,33,27,0.7)] transition-transform hover:-translate-y-0.5"
+                      >
+                        {link.label} →
+                        <span className="rounded-sm bg-ink/10 px-1 font-mono text-[9px] font-bold uppercase tracking-wider">
+                          Ad
+                        </span>
+                      </a>
+                    ) : (
+                      <a
+                        key={link.url + link.label}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-md border-[1.5px] border-sign/50 bg-sign/5 px-3 py-1.5 font-sign text-[12.5px] font-extrabold text-sign transition hover:bg-sign hover:text-white"
+                      >
+                        {link.label} ↗
+                      </a>
+                    )
+                  )}
+                </div>
+              )}
             </div>
           </li>
         );
