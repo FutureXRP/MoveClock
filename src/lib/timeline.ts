@@ -25,22 +25,15 @@ const FEDERAL = {
   irs: { label: "IRS Form 8822 (change of address)", url: "https://www.irs.gov/forms-pubs/about-form-8822" },
 };
 
-// NEXT_PUBLIC_ vars are inlined at build time on both server and client.
-const AFF_INSURANCE = process.env.NEXT_PUBLIC_AFFILIATE_INSURANCE_URL;
-const AFF_CARSHIP = process.env.NEXT_PUBLIC_AFFILIATE_CARSHIP_URL;
+import { AFFILIATES } from "./affiliates";
 
 /** Build the destination to-do timeline (undated; day offsets from arrival). */
 export function buildTimeline(to: StateMove): TimelineItem[] {
   const items: TimelineItem[] = [];
 
-  const insuranceLinks: TimelineLink[] = [];
-  if (AFF_INSURANCE) {
-    insuranceLinks.push({
-      label: `Compare ${to.name} rates`,
-      url: AFF_INSURANCE,
-      sponsored: true,
-    });
-  }
+  const insuranceLinks: TimelineLink[] = [
+    { label: `Compare ${to.name} rates`, url: AFFILIATES.insurance.url, sponsored: true },
+  ];
   items.push({
     key: "insurance",
     dueDays: 0,
@@ -75,13 +68,11 @@ export function buildTimeline(to: StateMove): TimelineItem[] {
       url: vehUrl,
     });
   }
-  if (AFF_CARSHIP) {
-    vehicleLinks.push({
-      label: "Shipping a car instead? Get quotes",
-      url: AFF_CARSHIP,
-      sponsored: true,
-    });
-  }
+  vehicleLinks.push({
+    label: "Shipping a car instead? Get quotes",
+    url: AFFILIATES.carship.url,
+    sponsored: true,
+  });
   items.push({
     key: "vehicle",
     dueDays: to.vehicleDays,

@@ -54,8 +54,9 @@ export function TimelineView({
                       <a
                         key={link.url + link.label}
                         href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
+                        {...(link.url.startsWith("/")
+                          ? {}
+                          : { target: "_blank", rel: "noopener noreferrer sponsored" })}
                         className="inline-flex items-center gap-1.5 rounded-md bg-caution px-3 py-1.5 font-sign text-[12.5px] font-extrabold text-ink shadow-[inset_0_0_0_1.5px_rgba(22,33,27,0.7)] transition-transform hover:-translate-y-0.5"
                       >
                         {link.label} →
