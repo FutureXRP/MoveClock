@@ -31,6 +31,39 @@ import { AFFILIATES } from "./affiliates";
 export function buildTimeline(to: StateMove): TimelineItem[] {
   const items: TimelineItem[] = [];
 
+  items.push({
+    key: "movers",
+    dueDays: -28,
+    title: "Book your interstate movers (or the truck)",
+    detail:
+      "Good crews for state-to-state moves book out 4–6 weeks in summer. Get three quotes — interstate movers must be FMCSA-licensed, and the lowball unlicensed quote is how hostage-load scams start. Moving yourself? One-way trucks sell out too.",
+    kind: "smart",
+    links: [
+      { label: "Compare mover quotes", url: AFFILIATES.movers.url, sponsored: true },
+      { label: "Verify a mover's license (FMCSA)", url: "https://www.fmcsa.dot.gov/protect-your-move" },
+    ],
+  });
+
+  items.push({
+    key: "documents",
+    dueDays: -10,
+    title: "Stage your DMV paperwork before you pack it",
+    detail:
+      "The classic mistake: your passport, Social Security card, vehicle title, and birth certificate end up sealed in a box on a truck. Pull them into a folder that rides with you — plus two documents that can prove your new address (lease, utility setup, bank statement). You'll need them for the REAL ID version of your new license.",
+    kind: "smart",
+    links: [{ label: "REAL ID requirements (DHS)", url: "https://www.dhs.gov/real-id" }],
+  });
+
+  items.push({
+    key: "mail-forward",
+    dueDays: -7,
+    title: "Start USPS mail forwarding",
+    detail:
+      "File it about a week before the truck comes so nothing lands at the old place after you leave. $1.10 online, takes five minutes, and it's your safety net for every account you forget to update.",
+    kind: "smart",
+    links: [FEDERAL.usps],
+  });
+
   const insuranceLinks: TimelineLink[] = [
     { label: `Compare ${to.name} rates`, url: AFFILIATES.insurance.url, sponsored: true },
   ];
@@ -100,9 +133,9 @@ export function buildTimeline(to: StateMove): TimelineItem[] {
     dueDays: 14,
     title: "Update the boring-but-binding addresses",
     detail:
-      "IRS Form 8822, your bank, employer payroll (state withholding changes!), health insurance, and USPS forwarding if you haven't. Payroll matters most — wrong-state withholding is a tax-season headache.",
+      "IRS Form 8822, your bank, employer payroll (state withholding changes!), and health insurance. Payroll matters most — wrong-state withholding is a tax-season headache.",
     kind: "smart",
-    links: [FEDERAL.usps, FEDERAL.irs],
+    links: [FEDERAL.irs],
   });
 
   items.push({

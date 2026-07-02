@@ -78,7 +78,7 @@ export function RouteCountdown({ toSlug, fromSlug }: { toSlug: string; fromSlug?
           </p>
         )}
       </div>
-      <TimelineView items={items} arrivalISO={arrival || undefined} />
+      <TimelineView items={items} arrivalISO={arrival || undefined} checklistKey={to.slug} />
     </div>
   );
 }

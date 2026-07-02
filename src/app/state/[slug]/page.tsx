@@ -81,6 +81,10 @@ export default function StatePage({ params }: Props) {
 
       <section className="mt-12">
         <h2 className="mb-6 font-sign text-2xl font-black">Your first weeks, in order</h2>
+        <p className="-mt-4 mb-6 text-[15px] text-gravel">
+          Yellow markers are prep work before you arrive; check things off as you go —
+          we&apos;ll remember.
+        </p>
         <RouteCountdown toSlug={s.slug} />
       </section>
 
