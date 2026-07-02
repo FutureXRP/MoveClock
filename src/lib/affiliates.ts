@@ -19,4 +19,5 @@ export const AFFILIATES = {
   movers: resolve(process.env.NEXT_PUBLIC_AFFILIATE_MOVERS_URL, "movers"),
   insurance: resolve(process.env.NEXT_PUBLIC_AFFILIATE_INSURANCE_URL, "insurance"),
   carship: resolve(process.env.NEXT_PUBLIC_AFFILIATE_CARSHIP_URL, "car-shipping"),
+  internet: resolve(process.env.NEXT_PUBLIC_AFFILIATE_INTERNET_URL, "internet"),
 };

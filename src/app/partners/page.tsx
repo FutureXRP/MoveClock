@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Partner placements",
@@ -24,8 +25,14 @@ const SLOTS = [
   {
     id: "movers",
     name: "Moving company quotes",
-    where: "The 'Helpful for this move' card on all 2,600+ route and state pages",
+    where: "The Day −28 'book your movers' step on every timeline, plus the 'Helpful for this move' card on all 2,600+ route and state pages",
     why: "Route pages catch people while they're still planning — the highest-intent moment in the entire move.",
+  },
+  {
+    id: "internet",
+    name: "Internet & utility setup",
+    where: "The Day −14 'set up internet & utilities' step on every timeline",
+    why: "Movers must pick a provider at the new address within days — a decision made exactly once, right when this step surfaces.",
   },
 ];
 
@@ -66,7 +73,9 @@ export default function PartnersPage() {
           answer at these moments, get in touch.
         </p>
         <p className="mt-4 font-mono text-[13px] font-bold uppercase tracking-[0.12em] text-caution">
-          partners@moveclock.example — update this address in src/app/partners/page.tsx
+          <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-2">
+            {CONTACT_EMAIL}
+          </a>
         </p>
       </div>
 
