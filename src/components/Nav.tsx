@@ -2,26 +2,41 @@ import Link from "next/link";
 
 export function Nav() {
   return (
-    <header className="print-hide sticky top-0 z-40 border-b-4 border-double border-ink/70 bg-paper/95 backdrop-blur-sm">
+    <header className="print-hide sticky top-0 z-40 border-b-4 border-caution bg-sign">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-baseline gap-0.5">
-          <span className="font-display text-[22px] font-black tracking-tight text-ink">
-            DepositBack
+        <Link href="/" className="flex items-center gap-2.5">
+          <svg viewBox="0 0 40 44" className="h-9 w-9" aria-hidden="true">
+            <path
+              d="M20 2 37 8.5c0 15-5.5 27-17 33.5C8.5 35.5 3 23.5 3 8.5L20 2Z"
+              fill="#fff"
+            />
+            <path
+              d="M20 5 34 10.4c-.2 12.6-4.8 22.6-14 28.3C10.8 33 6.2 23 6 10.4L20 5Z"
+              fill="#0b5a3c"
+            />
+            <path
+              d="M20 12v10m0 0-4.5-4.5M20 22l4.5-4.5"
+              stroke="#ffc72c"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              transform="rotate(180 20 17)"
+            />
+            <circle cx="20" cy="29" r="2.6" fill="#ffc72c" />
+          </svg>
+          <span className="font-sign text-xl font-black tracking-tight text-white">
+            Move<span className="text-caution">Clock</span>
           </span>
-          <span className="font-display text-[26px] font-black leading-none text-seal">.</span>
         </Link>
-        <div className="flex items-center gap-2 font-ui text-[13px] font-semibold sm:gap-5">
-          <Link href="/law" className="px-1 py-2 uppercase tracking-[0.1em] text-soot transition hover:text-seal">
-            State laws
-          </Link>
-          <Link href="/kit" className="hidden px-1 py-2 uppercase tracking-[0.1em] text-soot transition hover:text-seal sm:block">
-            Escalation kit
+        <div className="flex items-center gap-1 font-sign text-[13px] font-bold uppercase tracking-[0.08em] sm:gap-4">
+          <Link href="/deadlines" className="px-2 py-2 text-white/85 transition hover:text-caution">
+            All 50 deadlines
           </Link>
           <Link
-            href="/demand-letter"
-            className="rounded-sm border-2 border-ink bg-seal px-3.5 py-2 uppercase tracking-[0.08em] text-cream shadow-liftsm transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+            href="/#plan"
+            className="rounded-lg bg-caution px-4 py-2 text-ink shadow-[inset_0_0_0_2px_rgba(22,33,27,0.8)] transition-transform hover:-translate-y-0.5"
           >
-            Write my letter
+            Plan my move
           </Link>
         </div>
       </nav>

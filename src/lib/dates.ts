@@ -4,19 +4,12 @@ export function addDays(iso: string, days: number): Date {
   return d;
 }
 
-export function addBusinessDays(iso: string, days: number): Date {
-  const d = new Date(iso + "T00:00:00");
-  let remaining = days;
-  while (remaining > 0) {
-    d.setDate(d.getDate() + 1);
-    const dow = d.getDay();
-    if (dow !== 0 && dow !== 6) remaining--;
-  }
-  return d;
-}
-
 export function fmtLongDate(d: Date): string {
   return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+}
+
+export function fmtShortDate(d: Date): string {
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 export function todayISO(): string {
@@ -34,11 +27,9 @@ export function daysFromToday(d: Date): number {
   return Math.round((target.getTime() - today.getTime()) / 86_400_000);
 }
 
-export function fmtMoney(n: number): string {
-  return n.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: n % 1 === 0 ? 0 : 2,
-    maximumFractionDigits: 2,
-  });
+export function toICSDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}${m}${day}`;
 }

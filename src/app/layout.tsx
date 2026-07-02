@@ -3,29 +3,29 @@ import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://depositback.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://moveclock.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "DepositBack — Get your security deposit back. It's the law.",
-    template: "%s · DepositBack",
+    default: "MoveClock — Your new state started counting the day you arrived",
+    template: "%s · MoveClock",
   },
   description:
-    "Your landlord has a legal deadline to return your security deposit — 14 to 60 days depending on the state — and most states impose 2×–3× penalties for missing it. Check your deadline and generate a statute-citing demand letter, free.",
+    "Moved to a new state? Your driver's license, vehicle registration, insurance, and voter registration all have legal deadlines — some as short as 10 days. Get your personalized countdown and put it in your calendar.",
   openGraph: {
-    title: "DepositBack — Get your security deposit back. It's the law.",
+    title: "MoveClock — Your new state started counting the day you arrived",
     description:
-      "Check your state's deposit-return deadline and generate a demand letter that cites the exact statute. Free.",
+      "License, registration, insurance, and voter deadlines for all 50 states, computed for your exact move date.",
     url: siteUrl,
-    siteName: "DepositBack",
+    siteName: "MoveClock",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DepositBack — Get your security deposit back. It's the law.",
+    title: "MoveClock — deadlines that start the day you arrive",
     description:
-      "Check your state's deposit-return deadline and generate a statute-citing demand letter. Free.",
+      "Every state gives new residents legal deadlines — some as short as 10 days. Get your countdown.",
   },
 };
 
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Courier+Prime:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;700;800;900&family=Overpass+Mono:wght@400;600;700&display=swap"
           rel="stylesheet"
         />
       </head>

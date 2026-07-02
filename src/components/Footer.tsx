@@ -1,81 +1,66 @@
 import Link from "next/link";
-import { STATES, LAST_REVIEWED } from "@/lib/states";
-
-const POPULAR = [
-  "california",
-  "texas",
-  "new-york",
-  "florida",
-  "massachusetts",
-  "illinois",
-  "washington",
-  "georgia",
-  "pennsylvania",
-  "colorado",
-  "new-jersey",
-  "arizona",
-];
+import { STATES, TOP_STATES, LAST_REVIEWED } from "@/lib/moveData";
 
 export function Footer() {
-  const popular = POPULAR.map((slug) => STATES.find((s) => s.slug === slug)!);
+  const popular = TOP_STATES.slice(0, 12).map((slug) => STATES.find((s) => s.slug === slug)!);
   return (
-    <footer className="print-hide mt-24 border-t-4 border-double border-ink/70">
+    <footer className="print-hide mt-24 bg-sign text-white">
+      <div className="center-line-h" />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
-          <div className="font-display text-xl font-black text-ink">
-            DepositBack<span className="text-seal">.</span>
+          <div className="font-sign text-xl font-black">
+            Move<span className="text-caution">Clock</span>
           </div>
-          <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-soot">
-            Your landlord has a legal deadline to return your security deposit — and in
-            most states, a penalty for missing it. We turn that law into a letter.
+          <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-white/80">
+            Your new state started counting the day you arrived — license, registration,
+            insurance, and voter deadlines, computed for your exact move date.
           </p>
-          <p className="mt-4 font-ui text-[11px] uppercase tracking-[0.14em] text-soot/70">
-            Statutes last reviewed {LAST_REVIEWED}
+          <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-white/60">
+            State rules last reviewed {LAST_REVIEWED}
           </p>
         </div>
         <div>
-          <div className="overline-label">Deposit law by state</div>
+          <div className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-caution">
+            Moving to…
+          </div>
           <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 text-[15px]">
             {popular.map((s) => (
               <li key={s.slug}>
-                <Link href={`/law/${s.slug}`} className="text-soot underline decoration-rule underline-offset-4 transition hover:text-seal hover:decoration-seal">
+                <Link href={`/state/${s.slug}`} className="text-white/85 underline decoration-white/30 underline-offset-4 transition hover:text-caution">
                   {s.name}
                 </Link>
               </li>
             ))}
           </ul>
-          <Link href="/law" className="mt-3 inline-block font-ui text-[13px] font-semibold text-seal hover:underline">
+          <Link href="/deadlines" className="mt-3 inline-block font-sign text-[13px] font-bold uppercase tracking-[0.08em] text-caution hover:underline">
             All 50 states + DC →
           </Link>
         </div>
         <div>
-          <div className="overline-label">Tools</div>
+          <div className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-caution">
+            Tools
+          </div>
           <ul className="mt-3 space-y-1.5 text-[15px]">
             <li>
-              <Link href="/#deadline" className="text-soot underline decoration-rule underline-offset-4 transition hover:text-seal hover:decoration-seal">
-                Deadline calculator
+              <Link href="/#plan" className="text-white/85 underline decoration-white/30 underline-offset-4 transition hover:text-caution">
+                Move countdown planner
               </Link>
             </li>
             <li>
-              <Link href="/demand-letter" className="text-soot underline decoration-rule underline-offset-4 transition hover:text-seal hover:decoration-seal">
-                Demand letter generator
-              </Link>
-            </li>
-            <li>
-              <Link href="/kit" className="text-soot underline decoration-rule underline-offset-4 transition hover:text-seal hover:decoration-seal">
-                Small-claims escalation kit
+              <Link href="/deadlines" className="text-white/85 underline decoration-white/30 underline-offset-4 transition hover:text-caution">
+                License deadlines, all states
               </Link>
             </li>
           </ul>
         </div>
       </div>
-      <div className="hairline mx-auto max-w-6xl px-4 sm:px-6">
-        <p className="py-6 text-[13px] leading-relaxed text-soot/80">
-          DepositBack provides general legal information and self-help tools, not legal
-          advice, and is not a law firm or a substitute for an attorney. Statutes change
-          and every situation differs — verify the current law for your state, and consult
-          a lawyer or local tenant-rights organization for advice on your specific case.
-          © {new Date().getFullYear()} DepositBack.
+      <div className="border-t border-white/15">
+        <p className="mx-auto max-w-6xl px-4 py-6 text-[13px] leading-relaxed text-white/60 sm:px-6">
+          MoveClock provides general information compiled from state agency guidance — not
+          legal, tax, or insurance advice. Rules and windows change; confirm current
+          requirements with the destination state&apos;s licensing agency. Some links on this
+          site may be affiliate links that support the project at no cost to you. ©{" "}
+          {new Date().getFullYear()} MoveClock.
         </p>
       </div>
     </footer>

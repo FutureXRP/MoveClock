@@ -7,91 +7,99 @@
 }
 
 body {
-  @apply bg-paper font-body text-ink antialiased;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.31 0 0 0 0 0.2 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  @apply bg-road font-sign text-ink antialiased;
 }
 
 ::selection {
-  background: rgba(168, 39, 27, 0.18);
+  background: rgba(255, 199, 44, 0.45);
 }
 
-/* ── Type helpers ───────────────────────────────────────────────────────────── */
+/* ── Type ───────────────────────────────────────────────────────────────────── */
 
 .kicker {
-  @apply font-ui text-[11px] font-semibold uppercase tracking-[0.22em] text-seal;
+  @apply font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-sign;
 }
 
 .overline-label {
-  @apply font-ui text-[11px] font-semibold uppercase tracking-[0.18em] text-soot;
+  @apply font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-gravel;
 }
 
-.prose-drop > p:first-of-type::first-letter {
-  @apply float-left mr-2 mt-1 font-display text-[3.4rem] font-black leading-[0.8] text-seal;
+/* ── Sign panels & buttons ──────────────────────────────────────────────────── */
+
+/* Classic guide-sign: green fill, white inset stroke, rounded corners. */
+.sign-panel {
+  @apply rounded-xl bg-sign text-white shadow-sign;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.92),
+    inset 0 0 0 6px #0b5a3c,
+    0 10px 24px -10px rgba(11, 90, 60, 0.45);
 }
 
-/* ── Surfaces ───────────────────────────────────────────────────────────────── */
-
-.doc-card {
-  @apply rounded-sm border border-rule bg-cream shadow-paper;
+.btn-sign {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-sign px-6 py-3.5 font-sign text-[15px] font-extrabold uppercase tracking-[0.06em] text-white transition-transform hover:-translate-y-0.5 active:translate-y-0;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.92),
+    inset 0 0 0 5px #0b5a3c,
+    0 8px 18px -8px rgba(11, 90, 60, 0.55);
 }
 
-.plate {
-  @apply rounded-sm border-2 border-ink bg-cream shadow-lift;
+.btn-caution {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-caution px-6 py-3.5 font-sign text-[15px] font-extrabold uppercase tracking-[0.06em] text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0;
+  box-shadow:
+    inset 0 0 0 2px rgba(22, 33, 27, 0.85),
+    inset 0 0 0 5px #ffc72c,
+    0 8px 18px -8px rgba(120, 90, 0, 0.45);
 }
 
-.hairline {
-  @apply border-t border-rule;
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border-2 border-ink/70 bg-card px-6 py-3.5 font-sign text-[15px] font-extrabold uppercase tracking-[0.06em] text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0;
 }
 
-.double-rule {
-  border-top: 3px double rgba(33, 31, 26, 0.75);
-}
+/* ── Cards & fields ─────────────────────────────────────────────────────────── */
 
-/* ── Controls ───────────────────────────────────────────────────────────────── */
-
-.btn-primary {
-  @apply inline-flex items-center justify-center gap-2 rounded-sm border-2 border-ink bg-seal px-5 py-3 font-ui text-sm font-bold uppercase tracking-[0.08em] text-cream shadow-liftsm transition-all hover:-translate-y-0.5 hover:shadow-lift active:translate-y-0 active:shadow-none;
-}
-
-.btn-outline {
-  @apply inline-flex items-center justify-center gap-2 rounded-sm border-2 border-ink bg-cream px-5 py-3 font-ui text-sm font-bold uppercase tracking-[0.08em] text-ink shadow-liftsm transition-all hover:-translate-y-0.5 hover:shadow-lift active:translate-y-0 active:shadow-none;
+.card {
+  @apply rounded-xl border border-rule bg-card shadow-card;
 }
 
 .field {
-  @apply w-full rounded-sm border border-ink/30 bg-white/80 px-3 py-2.5 font-ui text-[15px] text-ink placeholder-soot/50 outline-none transition focus:border-seal focus:ring-2 focus:ring-seal/20;
+  @apply w-full rounded-lg border-2 border-ink/25 bg-white px-3 py-2.5 font-sign text-[15px] text-ink outline-none transition focus:border-sign focus:ring-2 focus:ring-sign/25;
 }
 
 .field-label {
-  @apply mb-1.5 block font-ui text-[11px] font-semibold uppercase tracking-[0.14em] text-soot;
+  @apply mb-1.5 block font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-gravel;
 }
 
-/* ── Stamp ──────────────────────────────────────────────────────────────────── */
+/* ── Road motifs ────────────────────────────────────────────────────────────── */
 
-.stamp {
-  @apply inline-block rotate-[-6deg] rounded-sm border-[3px] border-seal px-3 py-1 font-ui text-sm font-black uppercase tracking-[0.14em] text-seal;
-  border-style: double;
-  border-width: 4px;
-  mix-blend-mode: multiply;
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 -0.15'/%3E%3C/filter%3E%3Crect width='120' height='120' fill='%23fff' filter='url(%23r)'/%3E%3C/svg%3E");
+/* Dashed yellow center line, used as timeline spine / section divider. */
+.center-line {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #ffc72c 0px,
+    #ffc72c 14px,
+    transparent 14px,
+    transparent 26px
+  );
 }
 
-/* ── Letter preview ─────────────────────────────────────────────────────────── */
+.center-line-h {
+  height: 4px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #ffc72c 0px,
+    #ffc72c 26px,
+    transparent 26px,
+    transparent 48px
+  );
+}
 
-.letter-paper {
-  @apply rounded-[2px] border border-rule bg-white p-8 font-mono text-[13.5px] leading-relaxed text-[#26241f] shadow-paper sm:p-12;
+.mile-marker {
+  @apply inline-flex min-w-[3.2rem] flex-col items-center rounded-md bg-sign px-2 py-1.5 font-mono font-bold leading-none text-white;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.9);
 }
 
 @media print {
-  body {
-    background: #fff !important;
-  }
   .print-hide {
     display: none !important;
-  }
-  .letter-paper {
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    font-size: 12.5pt;
   }
 }

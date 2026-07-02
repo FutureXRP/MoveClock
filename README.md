@@ -1,87 +1,83 @@
-# DepositBack 🏛️
+# MoveClock 🛣️
 
-**Your landlord has a deadline. It may have already passed.**
+**Your new state started counting the day you arrived.**
 
-Renters hand over roughly **$45 billion** in security deposits, and about 1 in 4 report
-losing deposit money they believe was wrongfully withheld. Almost none of them know the
-two facts that change the outcome:
+Around 8 million Americans move between states every year, and almost none of them know
+that the destination state starts several *legal* clocks the day they establish
+residency:
 
-1. **Every state gives landlords a hard statutory deadline** (14–60 days) to return the
-   deposit or itemize deductions.
-2. **Most states impose 2×–3× penalties** for missing it — Texas is 3× + $100 +
-   attorney's fees; Massachusetts is treble damages plus interest.
+- **Driver's license conversion** — 10 days in California; *zero grace period* in
+  Arizona, Massachusetts, and Michigan; up to 90 elsewhere. Driving past the deadline is
+  citable.
+- **Vehicle title & registration** — usually a *different* window than the license
+  (Texas: 90 days for the license, 30 for the truck), with late fees that stack.
+- **Insurance, voter registration, payroll withholding** — each with its own trap.
 
-DepositBack turns that law into action:
+MoveClock turns that scattered mess into one product:
 
-- **Deadline calculator** — state + move-out date → the exact day the law required the
-  money back, and the size of the potential claim.
-- **51 state-law guides** (`/law/[state]`) — deadline, statute citation, penalty,
-  wear-and-tear rules, and a step-by-step playbook. FAQ structured data on every page.
-- **Free demand-letter generator** (`/demand-letter`) — a certified-mail-ready letter
-  that cites the exact statute, computes the exact dates, and states the exact penalty.
-  Runs entirely in the browser; nothing the user types ever leaves their machine.
-- **The Escalation Kit** (`/kit`, $29 one-time) — final-notice letter, small-claims
-  filing walkthrough, exhibit-binder checklist, and a 90-second hearing script for
-  landlords who stonewall.
+- **Route planner** — origin + destination + arrival date → a dated countdown with
+  day-badges, what to bring, and the counter-by-counter gotchas.
+- **📅 Calendar export** — one click downloads an `.ics` file; every deadline lands in
+  Google/Apple/Outlook with a 3-day-early alarm. No account, no email.
+- **2,550 route pages** (`/moving/[from]/[to]`) + **51 state hubs** (`/state/[slug]`) +
+  a **master deadline table** (`/deadlines`) — programmatic SEO for "moving from X to Y"
+  and "how long to get a license after moving to X", with FAQ structured data.
+- **Origin-state exit notes** — the stuff people forget (New York/California residency
+  tax audits, returning NJ plates, closing Texas toll tags).
 
-## Why it earns passively
+## Why this is a passive-income asset
 
 | Engine | How |
 |---|---|
-| **Programmatic SEO** | 51 statically-generated state pages targeting "security deposit law [state]" / "how long does a landlord have to return a deposit" — evergreen, high-intent queries with weak product competition (mostly law-blog content). |
-| **One-time purchases** | Stripe Payment Link for the $29 kit — no payment code, no subscriptions to support, no refund ops. |
-| **Zero maintenance** | No database, no accounts, no cron jobs, no user data. The only recurring task is an annual statute review (edit one data file). |
+| **Programmatic SEO** | 2,600+ indexed pages targeting evergreen, high-intent move queries. The data answer ("30 days, here's the date") is exactly what searchers want and what generic moving-blog content doesn't compute. |
+| **Affiliate slots** | Moving quotes, car shipping, and insurance re-quotes are among the highest-CPA affiliate verticals on the web. Slots render only when `NEXT_PUBLIC_AFFILIATE_*` env vars are set — revenue turns on with a config change, no deploy. |
+| **Zero ops** | No database, no accounts, no server state. One data file to skim once a year. |
+
+**Novelty check (July 2026):** state DMV pages, moving-company blogs, and tax-prep
+articles each cover fragments; personalized *packing checklist* generators exist. No
+product was found that computes dated legal deadlines per state pair with calendar
+export. Searches: "new resident deadline calculator", "state to state moving checklist
+app", "days after moving license countdown".
 
 ## Stack
 
-- **Next.js 14** (App Router, TypeScript) — static-first; the only server code is one
-  optional Stripe verification route
-- **Tailwind CSS** with a custom editorial design system — paper texture, Fraunces &
-  Newsreader type, letterpress buttons, rubber-stamp accents
-- **Stripe Payment Link** (optional) for kit purchases
+- **Next.js 14** (App Router, TypeScript). Core pages + 240 busiest corridors are
+  prebuilt; the long tail of route pages renders on demand and caches for a day
+  (`revalidate = 86400`).
+- **Tailwind CSS** with a highway-signage design system — interstate green panels,
+  caution yellow, Overpass (the Highway-Gothic-derived typeface), mile-marker timeline.
+- `.ics` generation is pure client-side — nothing the user enters leaves the browser.
 
 ## Development
 
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # builds all 61 pages (51 state guides + core pages)
+npm run build
 ```
 
-The site is fully functional with **zero environment variables** — the kit simply runs
-in free "beta mode" until Stripe is configured.
+Fully functional with zero environment variables.
 
-## Deployment (~5 minutes)
+## Deployment (~3 minutes)
 
-1. Import the repo at [vercel.com/new](https://vercel.com/new) — Next.js is detected
-   automatically; no settings needed.
-2. Set `NEXT_PUBLIC_SITE_URL` to your deployed URL (used by the sitemap and metadata).
-3. **To monetize the kit** (optional, do this whenever):
-   - In Stripe, create a **Payment Link** for a one-time $29 product ("Escalation Kit").
-   - Under the link's confirmation settings, redirect to
-     `https://YOUR-DOMAIN/kit?session_id={CHECKOUT_SESSION_ID}`.
-   - Set `NEXT_PUBLIC_STRIPE_PAYMENT_LINK` (the link) and `STRIPE_SECRET_KEY` (for
-     server-side purchase verification) in Vercel env vars, then redeploy.
-4. Submit `https://YOUR-DOMAIN/sitemap.xml` in Google Search Console to start the SEO
-   clock.
+1. Import the repo at [vercel.com/new](https://vercel.com/new) — auto-detected, no
+   settings.
+2. Set `NEXT_PUBLIC_SITE_URL` to the deployed URL (sitemap + canonical tags).
+3. Submit `/sitemap.xml` (2,603 URLs) in Google Search Console.
+4. When ready to monetize: join moving/insurance/auto-transport affiliate programs and
+   set the three `NEXT_PUBLIC_AFFILIATE_*` env vars from [`.env.example`](.env.example).
 
 ## Content maintenance
 
-All legal data lives in one file: [`src/lib/states.ts`](src/lib/states.ts) — statute
-citations, deadlines, penalties, and notes for all 50 states + DC, with a
-`LAST_REVIEWED` date rendered site-wide. Statutes change; skim the file against current
-law once a year and bump the date. Every page carries a not-legal-advice disclaimer.
-
-## Honest positioning
-
-Adjacent things exist — law-firm blogs, NOLO articles, DoNotPay's generic letter bot —
-but there is no polished, dedicated, self-serve product for deposit recovery with
-per-state statute math. The moat is content quality + product experience, and the
-"passive" part is real: static pages, one-time payments, no ops.
+All state data lives in [`src/lib/moveData.ts`](src/lib/moveData.ts) — deadlines,
+agency names, inspection rules, tax flags, exit notes — with a `LAST_REVIEWED` date
+rendered site-wide. Deadlines were compiled from state agency guidance; a fact-check
+pass against each DMV site before heavy promotion is recommended (it's 51 rows — an
+afternoon). Every page carries a verify-with-the-agency disclaimer.
 
 ## Roadmap ideas
 
-- Per-city pages (Chicago RLTO, SF, NYC) — stricter local ordinances, more SEO surface
-- Spanish-language versions of the guides and letter
-- "Deposit protection" checklist for move-IN (photos, condition report) as an email-capture lead magnet
-- Affiliate: certified-mail-online services (send the letter without a post-office trip)
+- Per-state DMV document checklists ("what counts as proof of residency in X")
+- City-level pages (NYC 90-day plate rule, Chicago city sticker, DC RPP)
+- Email-capture "moving in 30 days" drip checklist as a lead magnet
+- International → US and military-move variants

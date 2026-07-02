@@ -1,19 +1,28 @@
 import type { MetadataRoute } from "next";
-import { STATES } from "@/lib/states";
+import { STATES } from "@/lib/moveData";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://depositback.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://moveclock.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages: MetadataRoute.Sitemap = [
+  const core: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
-    { url: `${siteUrl}/law`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${siteUrl}/demand-letter`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${siteUrl}/kit`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${siteUrl}/deadlines`, changeFrequency: "monthly", priority: 0.9 },
   ];
-  const statePages: MetadataRoute.Sitemap = STATES.map((s) => ({
-    url: `${siteUrl}/law/${s.slug}`,
+  const stateHubs: MetadataRoute.Sitemap = STATES.map((s) => ({
+    url: `${siteUrl}/state/${s.slug}`,
     changeFrequency: "monthly",
     priority: 0.8,
   }));
-  return [...staticPages, ...statePages];
+  const pairs: MetadataRoute.Sitemap = [];
+  for (const from of STATES) {
+    for (const to of STATES) {
+      if (from.slug === to.slug) continue;
+      pairs.push({
+        url: `${siteUrl}/moving/${from.slug}/${to.slug}`,
+        changeFrequency: "monthly",
+        priority: 0.6,
+      });
+    }
+  }
+  return [...core, ...stateHubs, ...pairs];
 }
