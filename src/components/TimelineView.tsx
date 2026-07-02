@@ -34,8 +34,11 @@ export function TimelineView({
                   >
                     {fmtShortDate(due)}
                     {remaining !== null && (
-                      <span className="ml-2 rounded px-1.5 py-0.5 text-[11px] uppercase tracking-wide text-white"
-                        style={{ background: overdue ? "#b3261e" : "#0b5a3c" }}>
+                      <span
+                        className={`ml-2 rounded px-1.5 py-0.5 text-[11px] uppercase tracking-wide text-white ${
+                          overdue ? "bg-[#b3261e]" : "bg-sign"
+                        } print:border print:border-ink print:bg-transparent print:text-ink`}
+                      >
                         {overdue
                           ? `${Math.abs(remaining)} days overdue`
                           : remaining === 0
@@ -57,7 +60,7 @@ export function TimelineView({
                         {...(link.url.startsWith("/")
                           ? {}
                           : { target: "_blank", rel: "noopener noreferrer sponsored" })}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-caution px-3 py-1.5 font-sign text-[12.5px] font-extrabold text-ink shadow-[inset_0_0_0_1.5px_rgba(22,33,27,0.7)] transition-transform hover:-translate-y-0.5"
+                        className="inline-flex items-center gap-1.5 rounded-md bg-caution px-3 py-1.5 font-sign text-[12.5px] font-extrabold text-ink shadow-[inset_0_0_0_1.5px_rgba(22,33,27,0.7)] transition-transform hover:-translate-y-0.5 print:hidden"
                       >
                         {link.label} →
                         <span className="rounded-sm bg-ink/10 px-1 font-mono text-[9px] font-bold uppercase tracking-wider">
