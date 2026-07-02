@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { STATES, getStateMove } from "@/lib/moveData";
 import { clearPlan, loadPlan, savePlan } from "@/lib/plan";
@@ -32,10 +31,14 @@ export function MovePlanner() {
   useEffect(() => {
     if (!hydrated || !dirty.current) return;
     savePlan({ from, to, arrival });
-    if (from && to && arrival) {
-      router.push(`/moving/${from}/${to}`);
-    }
-  }, [from, to, arrival, hydrated, router]);
+  }, [from, to, arrival, hydrated]);
+
+  function go(e: React.FormEvent) {
+    e.preventDefault();
+    if (!from || !to) return;
+    savePlan({ from, to, arrival });
+    router.push(`/moving/${from}/${to}`);
+  }
 
   function touch<T>(setter: (v: T) => void) {
     return (v: T) => {
@@ -76,6 +79,7 @@ export function MovePlanner() {
       <h2 className="mt-2 font-sign text-2xl font-black leading-tight text-white">
         Where are you headed?
       </h2>
+      <form onSubmit={go}>
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
         <div>
           <label className="field-label !text-white/75" htmlFor="mp-from">Moving from</label>
@@ -117,16 +121,18 @@ export function MovePlanner() {
           <strong className="text-caution">
             {toState.vehicleDays === 0 ? "no grace period" : `${toState.vehicleDays} days`}
           </strong>{" "}
-          for your vehicle. Add your arrival date and we&apos;ll take you to your
-          countdown.
+          for your vehicle.
         </p>
       )}
 
-      {hasSavedRoute && (
-        <Link href={`/moving/${from}/${to}`} className="btn-caution mt-6 w-full">
-          {arrival ? "View my countdown →" : "See the full countdown →"}
-        </Link>
-      )}
+      <button
+        type="submit"
+        disabled={!hasSavedRoute}
+        className="btn-caution mt-6 w-full disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        {arrival ? "Get my countdown →" : "See my deadlines →"}
+      </button>
+      </form>
     </div>
   );
 }
