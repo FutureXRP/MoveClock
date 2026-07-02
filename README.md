@@ -1,107 +1,87 @@
-# SubSentry 🛡️💸
+# DepositBack 🏛️
 
-**Stop paying for things you forgot you had.**
+**Your landlord has a deadline. It may have already passed.**
 
-The average person wastes **$200+/month** on forgotten subscriptions. SubSentry is a
-subscription-leak tracker that:
+Renters hand over roughly **$45 billion** in security deposits, and about 1 in 4 report
+losing deposit money they believe was wrongfully withheld. Almost none of them know the
+two facts that change the outcome:
 
-1. **Tracks every subscription** in one place — quick-add from 50+ common services with
-   typical prices pre-filled, or add anything custom. No bank login required.
-2. **Warns you before renewals hit** — renewal dates roll forward automatically and a
-   daily cron emails users 3 days before a charge.
-3. **Shows exactly how to cancel** — 24 step-by-step cancellation guides (Planet
-   Fitness, Adobe, SiriusXM, Amazon Prime…) including the retention traps each service
-   uses to keep billing you. These pages are the SEO engine: "how to cancel X" is
-   massive, evergreen, high-intent search traffic.
+1. **Every state gives landlords a hard statutory deadline** (14–60 days) to return the
+   deposit or itemize deductions.
+2. **Most states impose 2×–3× penalties** for missing it — Texas is 3× + $100 +
+   attorney's fees; Massachusetts is treble damages plus interest.
 
-## Why this makes money while you sleep
+DepositBack turns that law into action:
+
+- **Deadline calculator** — state + move-out date → the exact day the law required the
+  money back, and the size of the potential claim.
+- **51 state-law guides** (`/law/[state]`) — deadline, statute citation, penalty,
+  wear-and-tear rules, and a step-by-step playbook. FAQ structured data on every page.
+- **Free demand-letter generator** (`/demand-letter`) — a certified-mail-ready letter
+  that cites the exact statute, computes the exact dates, and states the exact penalty.
+  Runs entirely in the browser; nothing the user types ever leaves their machine.
+- **The Escalation Kit** (`/kit`, $29 one-time) — final-notice letter, small-claims
+  filing walkthrough, exhibit-binder checklist, and a 90-second hearing script for
+  landlords who stonewall.
+
+## Why it earns passively
 
 | Engine | How |
 |---|---|
-| **SEO traffic** | 24 statically-generated `/cancel/[service]` guides with `HowTo` structured data, sitemap, and internal linking. Every guide funnels readers into the free tracker. |
-| **Pro tier** | $24/year via a Stripe Payment Link (zero payment code to maintain). Free plan caps at 15 subscriptions; Pro unlocks unlimited + CSV export. |
-| **Retention loop** | Renewal-alert emails bring users back weekly at the exact moment the product is most valuable — right before money leaves their account. |
-
-The tracker works **instantly with zero setup** (localStorage), so visitors get value
-before ever creating an account — accounts exist for cloud sync + email alerts.
+| **Programmatic SEO** | 51 statically-generated state pages targeting "security deposit law [state]" / "how long does a landlord have to return a deposit" — evergreen, high-intent queries with weak product competition (mostly law-blog content). |
+| **One-time purchases** | Stripe Payment Link for the $29 kit — no payment code, no subscriptions to support, no refund ops. |
+| **Zero maintenance** | No database, no accounts, no cron jobs, no user data. The only recurring task is an annual statute review (edit one data file). |
 
 ## Stack
 
-- **Next.js 14** (App Router, TypeScript) — deploys to Vercel in one click
-- **Tailwind CSS** — dark, modern UI
-- **Supabase** — magic-link auth + Postgres with row-level security
-- **Resend** — renewal reminder emails (sent by a Vercel Cron job)
-- **Stripe Payment Link** — Pro upgrades with no server-side payment code
+- **Next.js 14** (App Router, TypeScript) — static-first; the only server code is one
+  optional Stripe verification route
+- **Tailwind CSS** with a custom editorial design system — paper texture, Fraunces &
+  Newsreader type, letterpress buttons, rubber-stamp accents
+- **Stripe Payment Link** (optional) for kit purchases
 
-## Local development
+## Development
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev     # http://localhost:3000
+npm run build   # builds all 61 pages (51 state guides + core pages)
 ```
 
-The app runs fully in **local mode** with no environment variables — subscriptions save
-to the browser. Configure Supabase to enable accounts.
+The site is fully functional with **zero environment variables** — the kit simply runs
+in free "beta mode" until Stripe is configured.
 
-## Production setup (~15 minutes)
+## Deployment (~5 minutes)
 
-### 1. Supabase (accounts + cloud sync)
+1. Import the repo at [vercel.com/new](https://vercel.com/new) — Next.js is detected
+   automatically; no settings needed.
+2. Set `NEXT_PUBLIC_SITE_URL` to your deployed URL (used by the sitemap and metadata).
+3. **To monetize the kit** (optional, do this whenever):
+   - In Stripe, create a **Payment Link** for a one-time $29 product ("Escalation Kit").
+   - Under the link's confirmation settings, redirect to
+     `https://YOUR-DOMAIN/kit?session_id={CHECKOUT_SESSION_ID}`.
+   - Set `NEXT_PUBLIC_STRIPE_PAYMENT_LINK` (the link) and `STRIPE_SECRET_KEY` (for
+     server-side purchase verification) in Vercel env vars, then redeploy.
+4. Submit `https://YOUR-DOMAIN/sitemap.xml` in Google Search Console to start the SEO
+   clock.
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. Open **SQL Editor → New query**, paste the contents of
-   [`supabase/schema.sql`](supabase/schema.sql), and **Run**.
-3. In **Authentication → URL Configuration**, set *Site URL* to your production domain
-   and add `https://YOUR-DOMAIN/dashboard` to *Redirect URLs*.
-4. Copy from **Project Settings → API**:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY` (server-only, powers the reminder cron)
+## Content maintenance
 
-### 2. Vercel (hosting + cron)
+All legal data lives in one file: [`src/lib/states.ts`](src/lib/states.ts) — statute
+citations, deadlines, penalties, and notes for all 50 states + DC, with a
+`LAST_REVIEWED` date rendered site-wide. Statutes change; skim the file against current
+law once a year and bump the date. Every page carries a not-legal-advice disclaimer.
 
-1. Import this repo at [vercel.com/new](https://vercel.com/new) — Next.js is
-   auto-detected, no build settings needed.
-2. Add the environment variables from [`.env.example`](.env.example)
-   (Project → Settings → Environment Variables).
-3. Set `CRON_SECRET` to a long random string — Vercel automatically sends it as a
-   Bearer token when invoking the cron defined in [`vercel.json`](vercel.json)
-   (daily at 14:00 UTC).
-4. Set `NEXT_PUBLIC_SITE_URL` to your deployed URL (for sitemap + emails).
+## Honest positioning
 
-### 3. Resend (renewal alert emails)
-
-1. Create an API key at [resend.com](https://resend.com) → `RESEND_API_KEY`.
-2. Verify a sending domain and set `REMINDER_FROM_EMAIL`
-   (e.g. `SubSentry <alerts@yourdomain.com>`). Until then it falls back to Resend's
-   onboarding sender, which only delivers to your own account's email.
-
-### 4. Stripe (Pro upgrades)
-
-1. In Stripe, create a **Payment Link** for a $24/year "SubSentry Pro" product.
-2. Set `NEXT_PUBLIC_STRIPE_PAYMENT_LINK` to that URL — the Pricing page picks it up.
-3. When a payment lands, flip the customer's `is_pro` flag in the `profiles` table
-   (Supabase → Table Editor). Automating this with a Stripe webhook is the natural next
-   step, but manual works fine at MVP volume.
-
-If a step is skipped, the app degrades gracefully: no Supabase → local-only mode with a
-friendly notice; no Resend → cron reports "not configured"; no Stripe link → Pricing
-shows "Pro launching soon".
-
-## Testing
-
-```bash
-npm run build      # type-checks and builds all 34 pages
-npm start          # serve the production build
-```
-
-Smoke-test routes: `/`, `/dashboard`, `/cancel`, `/cancel/planet-fitness`, `/pricing`,
-`/login`, `/sitemap.xml`. The cron endpoint (`/api/cron/reminders`) returns 401 without
-the `CRON_SECRET` bearer token — that means it's protected and working.
+Adjacent things exist — law-firm blogs, NOLO articles, DoNotPay's generic letter bot —
+but there is no polished, dedicated, self-serve product for deposit recovery with
+per-state statute math. The moat is content quality + product experience, and the
+"passive" part is real: static pages, one-time payments, no ops.
 
 ## Roadmap ideas
 
-- Stripe webhook → automatic `is_pro` flag
-- Price-hike alerts (notify when a tracked service raises its typical price)
-- More guides — each new `src/lib/guides.ts` entry is a new SEO landing page
-- Shared household tracking
-- "Cancel for me" concierge as a paid add-on
+- Per-city pages (Chicago RLTO, SF, NYC) — stricter local ordinances, more SEO surface
+- Spanish-language versions of the guides and letter
+- "Deposit protection" checklist for move-IN (photos, condition report) as an email-capture lead magnet
+- Affiliate: certified-mail-online services (send the letter without a post-office trip)

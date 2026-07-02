@@ -1,18 +1,19 @@
 import type { MetadataRoute } from "next";
-import { GUIDES } from "@/lib/guides";
+import { STATES } from "@/lib/states";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://subsentry.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://depositback.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
-    { url: `${siteUrl}/cancel`, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${siteUrl}/pricing`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${siteUrl}/law`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${siteUrl}/demand-letter`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${siteUrl}/kit`, changeFrequency: "monthly", priority: 0.7 },
   ];
-  const guidePages: MetadataRoute.Sitemap = GUIDES.map((g) => ({
-    url: `${siteUrl}/cancel/${g.slug}`,
+  const statePages: MetadataRoute.Sitemap = STATES.map((s) => ({
+    url: `${siteUrl}/law/${s.slug}`,
     changeFrequency: "monthly",
     priority: 0.8,
   }));
-  return [...staticPages, ...guidePages];
+  return [...staticPages, ...statePages];
 }

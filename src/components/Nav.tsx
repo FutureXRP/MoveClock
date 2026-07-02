@@ -1,34 +1,27 @@
 import Link from "next/link";
-import { Logo } from "./Logo";
 
 export function Nav() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/80 backdrop-blur">
+    <header className="print-hide sticky top-0 z-40 border-b-4 border-double border-ink/70 bg-paper/95 backdrop-blur-sm">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-white">
-          <Logo />
-          <span className="text-lg">
-            Sub<span className="text-emerald-400">Sentry</span>
+        <Link href="/" className="flex items-baseline gap-0.5">
+          <span className="font-display text-[22px] font-black tracking-tight text-ink">
+            DepositBack
           </span>
+          <span className="font-display text-[26px] font-black leading-none text-seal">.</span>
         </Link>
-        <div className="flex items-center gap-1 sm:gap-2">
-          <Link
-            href="/cancel"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:text-emerald-300"
-          >
-            Cancel Guides
+        <div className="flex items-center gap-2 font-ui text-[13px] font-semibold sm:gap-5">
+          <Link href="/law" className="px-1 py-2 uppercase tracking-[0.1em] text-soot transition hover:text-seal">
+            State laws
+          </Link>
+          <Link href="/kit" className="hidden px-1 py-2 uppercase tracking-[0.1em] text-soot transition hover:text-seal sm:block">
+            Escalation kit
           </Link>
           <Link
-            href="/pricing"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:text-emerald-300"
+            href="/demand-letter"
+            className="rounded-sm border-2 border-ink bg-seal px-3.5 py-2 uppercase tracking-[0.08em] text-cream shadow-liftsm transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
           >
-            Pricing
-          </Link>
-          <Link
-            href="/dashboard"
-            className="ml-1 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-ink-950 transition hover:bg-emerald-400"
-          >
-            My Dashboard
+            Write my letter
           </Link>
         </div>
       </nav>
