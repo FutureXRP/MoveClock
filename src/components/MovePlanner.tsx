@@ -1,47 +1,41 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { STATES, getStateMove } from "@/lib/moveData";
-import { buildICS, buildTimeline } from "@/lib/timeline";
 import { clearPlan, loadPlan, savePlan } from "@/lib/plan";
-import { TimelineView } from "./TimelineView";
 
-export function MovePlanner({
-  initialFrom = "",
-  initialTo = "",
-  compact = false,
-}: {
-  initialFrom?: string;
-  initialTo?: string;
-  compact?: boolean;
-}) {
-  const [from, setFrom] = useState(initialFrom);
-  const [to, setTo] = useState(initialTo);
+/**
+ * Homepage route planner. Once origin, destination, and date are all set by
+ * the user, it saves the plan and sends them to their route page — the
+ * canonical home of the countdown (better layout, printable, shareable URL).
+ */
+export function MovePlanner() {
+  const router = useRouter();
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [arrival, setArrival] = useState("");
   const [hydrated, setHydrated] = useState(false);
   const dirty = useRef(false);
 
-  // Restore the saved plan on mount. Page-provided route (initialFrom/To)
-  // wins for its own fields; the saved arrival date fills in everywhere so a
-  // dated countdown greets the visitor on any page they land on.
   useEffect(() => {
     const saved = loadPlan();
     if (saved) {
-      if (!initialFrom && saved.from) setFrom(saved.from);
-      if (!initialTo && saved.to) setTo(saved.to);
+      if (saved.from) setFrom(saved.from);
+      if (saved.to) setTo(saved.to);
       if (saved.arrival) setArrival(saved.arrival);
     }
     setHydrated(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Persist only after real user interaction — merely viewing a route page
-  // shouldn't overwrite a plan built elsewhere.
   useEffect(() => {
     if (!hydrated || !dirty.current) return;
     savePlan({ from, to, arrival });
-  }, [from, to, arrival, hydrated]);
+    if (from && to && arrival) {
+      router.push(`/moving/${from}/${to}`);
+    }
+  }, [from, to, arrival, hydrated, router]);
 
   function touch<T>(setter: (v: T) => void) {
     return (v: T) => {
@@ -56,133 +50,82 @@ export function MovePlanner({
   function startOver() {
     dirty.current = false;
     clearPlan();
-    setFrom(initialFrom);
-    setTo(initialTo);
+    setFrom("");
+    setTo("");
     setArrival("");
   }
 
   const toState = getStateMove(to);
-  const fromState = getStateMove(from);
-  const items = useMemo(() => (toState ? buildTimeline(toState) : []), [toState]);
-  const ready = Boolean(toState && arrival);
-
-  function downloadICS() {
-    if (!toState || !arrival) return;
-    const ics = buildICS(toState, arrival, items);
-    const blob = new Blob([ics], { type: "text/calendar" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `moveclock-${toState.slug}.ics`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+  const hasSavedRoute = Boolean(from && to);
 
   return (
-    <div id="plan">
-      <div className="sign-panel p-6 sm:p-8">
-        <div className="flex items-baseline justify-between gap-3">
-          <div className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-caution">
-            Route planner
-          </div>
-          {hydrated && (from || to || arrival) && (
-            <button
-              onClick={startOver}
-              className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-white/60 underline underline-offset-2 hover:text-caution"
-            >
-              Start over
-            </button>
-          )}
+    <div id="plan" className="sign-panel p-6 sm:p-8">
+      <div className="flex items-baseline justify-between gap-3">
+        <div className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-caution">
+          Route planner
         </div>
-        <h2 className="mt-2 font-sign text-2xl font-black leading-tight text-white">
-          {compact ? "Set your date — get your countdown" : "Where are you headed?"}
-        </h2>
-        <div className="mt-5 grid gap-4 sm:grid-cols-3">
-          <div>
-            <label className="field-label !text-white/75" htmlFor="mp-from">Moving from</label>
-            <select id="mp-from" className="field" value={from} onChange={(e) => updateFrom(e.target.value)}>
-              <option value="">State…</option>
-              {STATES.map((s) => (
-                <option key={s.slug} value={s.slug}>{s.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="field-label !text-white/75" htmlFor="mp-to">Moving to</label>
-            <select id="mp-to" className="field" value={to} onChange={(e) => updateTo(e.target.value)}>
-              <option value="">State…</option>
-              {STATES.filter((s) => s.slug !== from).map((s) => (
-                <option key={s.slug} value={s.slug}>{s.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="field-label !text-white/75" htmlFor="mp-date">Arrival date</label>
-            <input
-              id="mp-date"
-              type="date"
-              className="field"
-              value={arrival}
-              onChange={(e) => updateArrival(e.target.value)}
-            />
-          </div>
-        </div>
-        {toState && !arrival && (
-          <p className="mt-4 text-[14px] text-white/80">
-            {toState.name} gives you{" "}
-            <strong className="text-caution">
-              {toState.licenseDays === 0 ? "no grace period" : `${toState.licenseDays} days`}
-            </strong>{" "}
-            for your license and{" "}
-            <strong className="text-caution">
-              {toState.vehicleDays === 0 ? "no grace period" : `${toState.vehicleDays} days`}
-            </strong>{" "}
-            for your vehicle. Pick your arrival date to get exact dates.
-          </p>
+        {hydrated && (from || to || arrival) && (
+          <button
+            onClick={startOver}
+            className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-white/60 underline underline-offset-2 hover:text-caution"
+          >
+            Start over
+          </button>
         )}
       </div>
-
-      {ready && toState && (
-        <div className="mt-8">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <h3 className="font-sign text-xl font-black">
-              Your {toState.name} countdown
-            </h3>
-            <div className="flex gap-2">
-              <button onClick={downloadICS} className="btn-caution !px-4 !py-2 !text-[13px]">
-                ⤓ Add to calendar (.ics)
-              </button>
-              <button onClick={() => window.print()} className="btn-ghost !px-4 !py-2 !text-[13px]">
-                Print
-              </button>
-            </div>
-          </div>
-          <TimelineView items={items} arrivalISO={arrival} />
-          {fromState && fromState.exitNotes && fromState.exitNotes.length > 0 && (
-            <div className="card mt-6 border-l-4 border-l-caution p-5">
-              <div className="overline-label">Don&apos;t forget — leaving {fromState.name}</div>
-              <ul className="mt-2 space-y-2 text-[14.5px] leading-relaxed text-gravel">
-                {fromState.exitNotes.map((n) => (
-                  <li key={n} className="flex gap-2.5">
-                    <span className="font-bold text-sign">←</span>
-                    {n}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {fromState && !compact && (
-            <p className="print-hide mt-6 text-center text-[14px] text-gravel">
-              Your plan follows you around the site — or bookmark your route page:{" "}
-              <Link
-                href={`/moving/${fromState.slug}/${toState.slug}`}
-                className="font-bold text-sign underline underline-offset-4"
-              >
-                Moving from {fromState.name} to {toState.name} →
-              </Link>
-            </p>
-          )}
+      <h2 className="mt-2 font-sign text-2xl font-black leading-tight text-white">
+        Where are you headed?
+      </h2>
+      <div className="mt-5 grid gap-4 sm:grid-cols-3">
+        <div>
+          <label className="field-label !text-white/75" htmlFor="mp-from">Moving from</label>
+          <select id="mp-from" className="field" value={from} onChange={(e) => updateFrom(e.target.value)}>
+            <option value="">State…</option>
+            {STATES.map((s) => (
+              <option key={s.slug} value={s.slug}>{s.name}</option>
+            ))}
+          </select>
         </div>
+        <div>
+          <label className="field-label !text-white/75" htmlFor="mp-to">Moving to</label>
+          <select id="mp-to" className="field" value={to} onChange={(e) => updateTo(e.target.value)}>
+            <option value="">State…</option>
+            {STATES.filter((s) => s.slug !== from).map((s) => (
+              <option key={s.slug} value={s.slug}>{s.name}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="field-label !text-white/75" htmlFor="mp-date">Arrival date</label>
+          <input
+            id="mp-date"
+            type="date"
+            className="field"
+            value={arrival}
+            onChange={(e) => updateArrival(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {toState && !arrival && (
+        <p className="mt-4 text-[14px] text-white/80">
+          {toState.name} gives you{" "}
+          <strong className="text-caution">
+            {toState.licenseDays === 0 ? "no grace period" : `${toState.licenseDays} days`}
+          </strong>{" "}
+          for your license and{" "}
+          <strong className="text-caution">
+            {toState.vehicleDays === 0 ? "no grace period" : `${toState.vehicleDays} days`}
+          </strong>{" "}
+          for your vehicle. Add your arrival date and we&apos;ll take you to your
+          countdown.
+        </p>
+      )}
+
+      {hasSavedRoute && (
+        <Link href={`/moving/${from}/${to}`} className="btn-caution mt-6 w-full">
+          {arrival ? "View my countdown →" : "See the full countdown →"}
+        </Link>
       )}
     </div>
   );

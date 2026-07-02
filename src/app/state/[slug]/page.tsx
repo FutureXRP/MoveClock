@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MovePlanner } from "@/components/MovePlanner";
 import { AffiliateSlot } from "@/components/AffiliateSlot";
-import { TimelineView } from "@/components/TimelineView";
-import { buildTimeline } from "@/lib/timeline";
+import { RouteCountdown } from "@/components/RouteCountdown";
 import {
   getStateMove,
   licenseLabel,
@@ -35,7 +33,6 @@ export default function StatePage({ params }: Props) {
   const s = getStateMove(params.slug);
   if (!s) notFound();
 
-  const items = buildTimeline(s);
   const commonOrigins = ["california", "texas", "florida", "new-york", "illinois", "washington"]
     .filter((o) => o !== s.slug)
     .slice(0, 5)
@@ -43,7 +40,7 @@ export default function StatePage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <nav className="font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-gravel">
+      <nav className="print-hide font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-gravel">
         <Link href="/" className="hover:text-sign">MoveClock</Link> /{" "}
         <Link href="/deadlines" className="hover:text-sign">States</Link> / {s.name}
       </nav>
@@ -84,7 +81,7 @@ export default function StatePage({ params }: Props) {
 
       <section className="mt-12">
         <h2 className="mb-6 font-sign text-2xl font-black">Your first weeks, in order</h2>
-        <TimelineView items={items} />
+        <RouteCountdown toSlug={s.slug} />
       </section>
 
       {(s.notes ?? []).length > 0 && (
@@ -101,15 +98,11 @@ export default function StatePage({ params }: Props) {
         </section>
       )}
 
-      <section className="mt-12">
-        <MovePlanner initialTo={s.slug} compact />
-      </section>
-
-      <div className="mt-8">
+      <div className="print-hide mt-8">
         <AffiliateSlot />
       </div>
 
-      <section className="mt-12">
+      <section className="print-hide mt-12">
         <div className="overline-label">Popular routes into {s.name}</div>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           {commonOrigins.map((o) => (

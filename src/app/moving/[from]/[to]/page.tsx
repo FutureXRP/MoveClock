@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MovePlanner } from "@/components/MovePlanner";
 import { AffiliateSlot } from "@/components/AffiliateSlot";
-import { TimelineView } from "@/components/TimelineView";
-import { buildTimeline } from "@/lib/timeline";
+import { RouteCountdown } from "@/components/RouteCountdown";
 import {
   getStateMove,
   licenseLabel,
@@ -48,7 +46,6 @@ export default function RoutePage({ params }: Props) {
   const to = getStateMove(params.to);
   if (!from || !to || from.slug === to.slug) notFound();
 
-  const items = buildTimeline(to);
   const taxSwing =
     from.noIncomeTax && !to.noIncomeTax
       ? `Heads up: you're moving from a no-income-tax state into one that taxes wages — update your withholding with payroll early.`
@@ -95,7 +92,7 @@ export default function RoutePage({ params }: Props) {
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <nav className="font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-gravel">
+      <nav className="print-hide font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-gravel">
         <Link href="/" className="hover:text-sign">MoveClock</Link> / {from.name} → {to.name}
       </nav>
 
@@ -157,7 +154,7 @@ export default function RoutePage({ params }: Props) {
         <p className="mb-6 mt-2 text-[15px] text-gravel">
           Day 0 is the day you establish residency in {to.name}.
         </p>
-        <TimelineView items={items} />
+        <RouteCountdown toSlug={to.slug} fromSlug={from.slug} />
       </section>
 
       {(to.notes ?? []).length > 0 && (
@@ -188,17 +185,12 @@ export default function RoutePage({ params }: Props) {
         </section>
       )}
 
-      {/* Dated planner */}
-      <section className="mt-12">
-        <MovePlanner initialFrom={from.slug} initialTo={to.slug} compact />
-      </section>
-
-      <div className="mt-8">
+      <div className="print-hide mt-8">
         <AffiliateSlot />
       </div>
 
       {/* FAQ */}
-      <section className="mt-14">
+      <section className="print-hide mt-14">
         <h2 className="font-sign text-2xl font-black">Questions people ask on this route</h2>
         <dl className="mt-5 divide-y divide-rule border-y border-rule">
           {faqs.map((f) => (
@@ -211,7 +203,7 @@ export default function RoutePage({ params }: Props) {
       </section>
 
       {/* Related */}
-      <section className="mt-12">
+      <section className="print-hide mt-12">
         <div className="overline-label">Also moving to…</div>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           {related.map((r) => (
